@@ -29,7 +29,7 @@ from glob import glob
 from .logger import set_log_level, start_logfile, log
 from .configuration import Configuration
 from .util import execute_command
-from .project import project_analyse, mailinglist_analyse
+from .project import project_analyse, mailinglist_analyse, project_setup
 
 def get_parser():
     parser = argparse.ArgumentParser(prog='codeface',
@@ -69,6 +69,14 @@ def get_parser():
     run_parser.add_argument('--profile-r', action="store_true",
                         help="Compute an execution time profile for R code")
 
+    setup_parser = sub_parser.add_parser('setup', help='Run project setup')
+    setup_parser.set_defaults(func=cmd_setup)
+    setup_parser.add_argument('-c', '--config', help="Prosoda configuration file",
+                default='codeface.conf')
+    setup_parser.add_argument('-p', '--project', help="Project configuration file",
+                required=True)
+
+
     ml_parser = sub_parser.add_parser('ml', help='Run mailing list analysis')
     ml_parser.set_defaults(func=cmd_ml)
     ml_parser.add_argument('-c', '--config', help="Prosoda configuration file",
@@ -105,6 +113,15 @@ def cmd_run(args):
                     args.no_report, args.loglevel, logfile, args.recreate,
                     args.profile_r, args.jobs)
     return 0
+
+def cmd_setup(args):
+    '''Dispatch the ``setup`` command'''
+    codeface_conf, project_conf = map(os.path.abspath, (args.config, args.project))
+    logfile = args.logfile
+    if logfile:
+        logfile = os.path.abspath(logfile)
+    conf = Configuration.load(codeface_conf, project_conf)
+    project_setup(conf, False);
 
 def cmd_ml(args):
     '''Dispatch the ``ml`` command.'''
