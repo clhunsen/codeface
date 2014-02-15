@@ -189,3 +189,7 @@ def run(argv):
 def main():
     import sys
     return run(sys.argv)
+
+if __name__ == "__main__":
+    import sys
+    run(sys.argv)
