@@ -1004,16 +1004,16 @@ CREATE TABLE IF NOT EXISTS `codeface`.`file_instance` (
   `id` BIGINT NOT NULL,
   `path` VARCHAR(1000) NOT NULL,
   `lines_of_code` INT NOT NULL,
-  `commit_id` BIGINT NOT NULL,
+  `release_timeline_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_file_instance_commit1`
-    FOREIGN KEY (`commit_id`)
-    REFERENCES `codeface`.`commit` (`id`)
+  CONSTRAINT `fk_file_instance_release_timeline1`
+    FOREIGN KEY (`release_timeline_id`)
+    REFERENCES `codeface`.`release_timeline` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_file_instance_commit1_idx` ON `codeface`.`file_instance` (`commit_id` ASC);
+CREATE INDEX `fk_file_instance_release_timeline1_idx` ON `codeface`.`file_instance` (`release_timeline_id` ASC);
 
 
 -- -----------------------------------------------------
