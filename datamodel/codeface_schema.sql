@@ -1001,7 +1001,7 @@ CREATE INDEX `understand_raw_plotId_idx` ON `codeface`.`understand_raw` (`plotId
 DROP TABLE IF EXISTS `codeface`.`spl_file` ;
 
 CREATE TABLE IF NOT EXISTS `codeface`.`spl_file` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `path` TEXT NULL,
   `project_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
@@ -1021,7 +1021,7 @@ CREATE INDEX `fk_spl_file_project_id_idx` ON `codeface`.`spl_file` (`project_id`
 DROP TABLE IF EXISTS `codeface`.`spl_file_instance` ;
 
 CREATE TABLE IF NOT EXISTS `codeface`.`spl_file_instance` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `release_timeline_id` BIGINT NOT NULL,
   `file_id` INT NOT NULL,
   PRIMARY KEY (`id`),
@@ -1048,7 +1048,7 @@ CREATE INDEX `fk_spl_file_instance_release_timeline_id_idx` ON `codeface`.`spl_f
 DROP TABLE IF EXISTS `codeface`.`spl_metric` ;
 
 CREATE TABLE IF NOT EXISTS `codeface`.`spl_metric` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `scope` ENUM('ScopeProject', 'ScopeRelease', 'ScopeFileInstance') NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
@@ -1061,7 +1061,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `codeface`.`spl_variable` ;
 
 CREATE TABLE IF NOT EXISTS `codeface`.`spl_variable` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `spl_metric_id` INT NOT NULL,
   `scope` VARCHAR(45) NULL,
   `value` DOUBLE NULL,
