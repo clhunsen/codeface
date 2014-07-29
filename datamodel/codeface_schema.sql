@@ -994,6 +994,96 @@ CREATE INDEX `understand_raw_kind_idx` ON `codeface`.`understand_raw` (`kind` AS
 
 CREATE INDEX `understand_raw_plotId_idx` ON `codeface`.`understand_raw` (`plotId` ASC);
 
+
+-- -----------------------------------------------------
+-- Table `codeface`.`spl_file`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `codeface`.`spl_file` ;
+
+CREATE TABLE IF NOT EXISTS `codeface`.`spl_file` (
+  `id` INT NOT NULL,
+  `path` TEXT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `codeface`.`spl_file_instance`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `codeface`.`spl_file_instance` ;
+
+CREATE TABLE IF NOT EXISTS `codeface`.`spl_file_instance` (
+  `id` INT NOT NULL,
+  `release` VARCHAR(45) NULL,
+  `file_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `file_id`
+    FOREIGN KEY (`file_id`)
+    REFERENCES `codeface`.`spl_file` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE INDEX `file_id_idx` ON `codeface`.`spl_file_instance` (`file_id` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `codeface`.`spl_metric`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `codeface`.`spl_metric` ;
+
+CREATE TABLE IF NOT EXISTS `codeface`.`spl_metric` (
+  `id` INT NOT NULL,
+  `scope` ENUM('ScopeProject', 'ScopeRelease', 'ScopeFileInstance') NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `codeface`.`spl_variable`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `codeface`.`spl_variable` ;
+
+CREATE TABLE IF NOT EXISTS `codeface`.`spl_variable` (
+  `id` INT NOT NULL,
+  `spl_metric_id` INT NOT NULL,
+  `scope` VARCHAR(45) NULL,
+  `value` DOUBLE NULL,
+  `project_id` BIGINT NULL DEFAULT NULL,
+  `release_timeline_id` BIGINT NULL DEFAULT NULL,
+  `spl_file_instance_id` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `project_id`
+    FOREIGN KEY (`project_id`)
+    REFERENCES `codeface`.`project` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT,
+  CONSTRAINT `release_timeline_id`
+    FOREIGN KEY (`release_timeline_id`)
+    REFERENCES `codeface`.`release_timeline` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT,
+  CONSTRAINT `spl_file_instance_id`
+    FOREIGN KEY (`spl_file_instance_id`)
+    REFERENCES `codeface`.`spl_file_instance` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT,
+  CONSTRAINT `spl_metric_id`
+    FOREIGN KEY (`spl_metric_id`)
+    REFERENCES `codeface`.`spl_metric` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE INDEX `project_id_idx` ON `codeface`.`spl_variable` (`project_id` ASC);
+
+CREATE INDEX `release_timeline_id_idx` ON `codeface`.`spl_variable` (`release_timeline_id` ASC);
+
+CREATE INDEX `spl_file_instance_id_idx` ON `codeface`.`spl_variable` (`spl_file_instance_id` ASC);
+
+CREATE INDEX `spl_metric_id_idx` ON `codeface`.`spl_variable` (`spl_metric_id` ASC);
+
 USE `codeface` ;
 
 -- -----------------------------------------------------
