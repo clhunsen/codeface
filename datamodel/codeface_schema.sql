@@ -1003,8 +1003,16 @@ DROP TABLE IF EXISTS `codeface`.`spl_file` ;
 CREATE TABLE IF NOT EXISTS `codeface`.`spl_file` (
   `id` INT NOT NULL,
   `path` TEXT NULL,
-  PRIMARY KEY (`id`))
+  `project_id` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_spl_file_project_id`
+    FOREIGN KEY (`project_id`)
+    REFERENCES `codeface`.`project` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_spl_file_project_id_idx` ON `codeface`.`spl_file` (`project_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -1014,17 +1022,24 @@ DROP TABLE IF EXISTS `codeface`.`spl_file_instance` ;
 
 CREATE TABLE IF NOT EXISTS `codeface`.`spl_file_instance` (
   `id` INT NOT NULL,
-  `release` VARCHAR(45) NULL,
+  `release_timeline_id` BIGINT NOT NULL,
   `file_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_spl_file_instance_spl_file_id`
     FOREIGN KEY (`file_id`)
     REFERENCES `codeface`.`spl_file` (`id`)
     ON DELETE CASCADE
+    ON UPDATE RESTRICT,
+  CONSTRAINT `fk_spl_file_instance_release_timeline_id`
+    FOREIGN KEY (`release_timeline_id`)
+    REFERENCES `codeface`.`release_timeline` (`id`)
+    ON DELETE CASCADE
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX `file_id_idx` ON `codeface`.`spl_file_instance` (`file_id` ASC);
+CREATE INDEX `fk_spl_file_instance_spl_file_id_idx` ON `codeface`.`spl_file_instance` (`file_id` ASC);
+
+CREATE INDEX `fk_spl_file_instance_release_timeline_id_idx` ON `codeface`.`spl_file_instance` (`release_timeline_id` ASC);
 
 
 -- -----------------------------------------------------
