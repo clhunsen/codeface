@@ -36,19 +36,25 @@ class DatabaseImporter(object):
     file_instance_id = self.lookup_file_instance_id(filename, revision)
     return str(file_instance_id)
 
-  def lookup_file_instance_id(self, filename, revision):
-    """Returns the ID of a file_instance specified by 'filename' and 'revision'. If no instance is found, it is created"""
-    projectId = self.get_project_id()
+  def lookup_file_id(self, filename):
+    """Returns the ID of a file specified by 'filename'. If no instance is found, it is created"""
+    file_id = None
+    projectId = self.get_project_id(self.conf["project"])
     queryFile = 'SELECT id FROM spl_file WHERE path = %s and project_id = %s'
     self.db.doExec(queryFile, (filename, projectId))
     if self.db.cur.rowcount == 0:
-      #create_query = "INSERT INTO file_instance (path, commit_id) VALUES ('%s', %s)"
-      #self.db.doExecCommit(create_query, (filename, commit_id))
-      file_instance_id = self.db.cur.lastrowid
+      create_query = "INSERT INTO spl_file (path, project_id) VALUES (%s, %s)"
+      self.db.doExecCommit(create_query, (filename, projectId))
+      file_id = self.db.cur.lastrowid
     else:
-      file_instance_id = self.db.doFetchAll()[0][0]
+      file_id = self.db.doFetchAll()[0][0]
     
-    return file_instance_id
+    return file_id
+
+  def lookup_file_instance_id(self, filename, revision):
+    """Returns the ID of a file_instance specified by 'filename' and 'revision'. If no instance is found, it is created"""
+    self.lookup_file_id(filename)
+    return "1"
 
   def lookup_commit_id(self, release):
     """Lookup the commit that created a release and return its ID"""
@@ -61,6 +67,6 @@ class DatabaseImporter(object):
 
   def get_project_id(self, name):
     self.db.doExec("SELECT id FROM project WHERE name=%s;", name)
-    pid = self.doFetchAll()[0][0]
-    log.debug("Using project {} with ID {}" % (name, pid))
+    pid = self.db.doFetchAll()[0][0]
+    log.debug("Using project %s with ID %s" % (name, pid))
     return pid
