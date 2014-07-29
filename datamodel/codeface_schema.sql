@@ -1017,7 +1017,7 @@ CREATE TABLE IF NOT EXISTS `codeface`.`spl_file_instance` (
   `release` VARCHAR(45) NULL,
   `file_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `file_id`
+  CONSTRAINT `fk_spl_file_instance_spl_file_id`
     FOREIGN KEY (`file_id`)
     REFERENCES `codeface`.`spl_file` (`id`)
     ON DELETE CASCADE
@@ -1054,22 +1054,22 @@ CREATE TABLE IF NOT EXISTS `codeface`.`spl_variable` (
   `release_timeline_id` BIGINT NULL DEFAULT NULL,
   `spl_file_instance_id` INT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `project_id`
+  CONSTRAINT `fk_spl_variable_project_id`
     FOREIGN KEY (`project_id`)
     REFERENCES `codeface`.`project` (`id`)
     ON DELETE CASCADE
     ON UPDATE RESTRICT,
-  CONSTRAINT `release_timeline_id`
+  CONSTRAINT `fk_spl_variable_release_timeline_id`
     FOREIGN KEY (`release_timeline_id`)
     REFERENCES `codeface`.`release_timeline` (`id`)
     ON DELETE CASCADE
     ON UPDATE RESTRICT,
-  CONSTRAINT `spl_file_instance_id`
+  CONSTRAINT `fk_spl_variable_spl_file_instance_id`
     FOREIGN KEY (`spl_file_instance_id`)
     REFERENCES `codeface`.`spl_file_instance` (`id`)
     ON DELETE CASCADE
     ON UPDATE RESTRICT,
-  CONSTRAINT `spl_metric_id`
+  CONSTRAINT `fk_spl_variable_spl_metric_id`
     FOREIGN KEY (`spl_metric_id`)
     REFERENCES `codeface`.`spl_metric` (`id`)
     ON DELETE CASCADE
