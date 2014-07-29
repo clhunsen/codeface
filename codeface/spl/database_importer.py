@@ -12,7 +12,8 @@ class DatabaseImporter(object):
     self.db = DBManager(conf)
 
   def import_file_level_data(self):
-    path = self.get_path_file_level()
+    path = self.get_path_file_level("2.4.6")
+    log.info("Reading file-level data from %s" % path)
     data = cp.read_data_per_file(path)
     for line in data:
       key_value_pairs = line.items()
@@ -48,7 +49,7 @@ class DatabaseImporter(object):
     """Lookup the commit that created a release and return its ID"""
     return 1
 
-  def get_path_file_level(self):
+  def get_path_file_level(self, revision):
     path = self.cppStats["basePath"]
     revisionPattern = self.cppStats["revisionPattern"]
-    return path + "/" + (revisionPattern % "2.4.6") + '/perfile.csv'
+    return path + "/" + (revisionPattern % revision) + '/perfile.csv'
