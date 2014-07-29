@@ -12,14 +12,15 @@ class DatabaseImporter(object):
     self.db = DBManager(conf)
 
   def import_file_level_data(self):
-    path = self.get_path_file_level("2.4.6")
-    log.info("Reading file-level data from %s" % path)
-    data = cp.read_data_per_file(path)
-    for line in data:
-      key_value_pairs = line.items()
-      file_instance_id = self.get_file_instance_id(key_value_pairs)
-      query = 'INSERT INTO spl_statistics_file (file_instance_id, variable, value) VALUES (###FID###, %s, %s)'.replace('###FID###', file_instance_id)
-      #self.db.doExecMany(query, key_value_pairs)
+    for revision in self.conf["revisions"]:
+      path = self.get_path_file_level(revision)
+      log.info("Reading file-level data from %s" % path)
+      data = cp.read_data_per_file(path)
+      for line in data:
+        key_value_pairs = line.items()
+        file_instance_id = "1" #self.get_file_instance_id(key_value_pairs)
+        query = 'INSERT INTO spl_statistics_file (file_instance_id, variable, value) VALUES (###FID###, %s, %s)'.replace('###FID###', file_instance_id)
+        #self.db.doExecMany(query, key_value_pairs)
 
   def get_file_instance_id(self, key_value_pairs):
     """Looks for a 'FILENAME' key in the given key-value-pair-list. Performs a lookup for a file_instance with that name in the given release and returns its ID"""
