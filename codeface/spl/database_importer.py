@@ -53,8 +53,18 @@ class DatabaseImporter(object):
 
   def lookup_file_instance_id(self, filename, revision):
     """Returns the ID of a file_instance specified by 'filename' and 'revision'. If no instance is found, it is created"""
-    self.lookup_file_id(filename)
-    return "1"
+    file_instance_id = None
+    fileId = self.lookup_file_id(filename)
+    releaseTimelineId = self.lookup_release_timeline_id(revision)
+    queryFileInstance = 'SELECT id FROM spl_file_instance WHERE file_id = %s AND release_timeline_id = %s'
+    self.db.doExec(queryFileInstance, (fileId, releaseTimelineId))
+    if self.db.cur.rowcount == 0:
+      create_query = 'INSERT INTO spl_file_instance (file_id, release_timeline_id) VALUES (%s, %s)'
+      self.db.doExecCommit(create_query, (fileId, releaseTimelineId))
+      file_instance_id = self.db.cur.lastrowid
+    else:
+      file_instance_id = self.db.doFetchAll()[0][0]
+    return file_instance_id
 
   def lookup_commit_id(self, release):
     """Lookup the commit that created a release and return its ID"""
@@ -70,3 +80,10 @@ class DatabaseImporter(object):
     pid = self.db.doFetchAll()[0][0]
     log.debug("Using project %s with ID %s" % (name, pid))
     return pid
+
+  def lookup_release_timeline_id(self, revision):
+    projectId = self.get_project_id(self.conf["project"])
+    self.db.doExec("SELECT id FROM release_timeline WHERE projectId = %s AND type = 'release' AND tag = %s", (projectId, revision))
+    rtid = self.db.doFetchAll()[0][0]
+    log.debug("release_timeline lookup returned %s for (projectId:%s, revision:%s)" % (rtid, projectId, revision))
+    return rtid
