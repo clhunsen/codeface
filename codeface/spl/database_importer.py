@@ -8,6 +8,7 @@ class DatabaseImporter(object):
 
   def __init__(self, conf):
     self.conf = conf
+    self.cppStats = conf["spl"]["cppstats"]
     self.db = DBManager(conf)
 
   def import_file_level_data(self):
@@ -48,5 +49,6 @@ class DatabaseImporter(object):
     return 1
 
   def get_path_file_level(self):
-    path = self.conf["spl"]["cppstats"]["basePath"]
-    return path + '/httpd-2.4.6/perfile.csv'
+    path = self.cppStats["basePath"]
+    revisionPattern = self.cppStats["revisionPattern"]
+    return path + "/" + (revisionPattern % "2.4.6") + '/perfile.csv'
