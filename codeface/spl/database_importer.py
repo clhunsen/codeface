@@ -18,28 +18,32 @@ class DatabaseImporter(object):
       data = cp.read_data_per_file(path)
       for line in data:
         key_value_pairs = line.items()
-        file_instance_id = "1" #self.get_file_instance_id(key_value_pairs)
+        file_instance_id = self.get_file_instance_id(key_value_pairs, revision)
         query = 'INSERT INTO spl_statistics_file (file_instance_id, variable, value) VALUES (###FID###, %s, %s)'.replace('###FID###', file_instance_id)
         #self.db.doExecMany(query, key_value_pairs)
 
-  def get_file_instance_id(self, key_value_pairs):
-    """Looks for a 'FILENAME' key in the given key-value-pair-list. Performs a lookup for a file_instance with that name in the given release and returns its ID"""
+  def get_file_instance_id(self, key_value_pairs, revision):
+    """Looks for a 'FILENAME' key in the given key-value-pair-list. Performs a lookup for a file_instance with that name in the given revision and returns its ID"""
     filename = ''
     for key, value in key_value_pairs:
       if key == 'FILENAME':
         filename = value
         break
-    file_instance_id = self.lookup_file_instance_id(filename, 'release')
+    if not filename:
+      raise RuntimeError("data is missing a FILENAME attribute")
+
+    log.debug("Lookup spl_file_instance.id for %s", filename)
+    file_instance_id = self.lookup_file_instance_id(filename, revision)
     return str(file_instance_id)
-   
-  def lookup_file_instance_id(self, filename, release):
-    """Returns the ID of a file_instance specified by 'filename' and 'release'. If no instance is found, it is created"""
-    query = 'SELECT id FROM file_instance WHERE path = %s and commit_id = %s'
-    commit_id = self.lookup_commit_id(release)
-    self.db.doExec(query, (filename, commit_id))
+
+  def lookup_file_instance_id(self, filename, revision):
+    """Returns the ID of a file_instance specified by 'filename' and 'revision'. If no instance is found, it is created"""
+    projectId = self.get_project_id()
+    queryFile = 'SELECT id FROM spl_file WHERE path = %s and project_id = %s'
+    self.db.doExec(queryFile, (filename, projectId))
     if self.db.cur.rowcount == 0:
-      create_query = "INSERT INTO file_instance (path, commit_id) VALUES ('%s', %s)"
-      self.db.doExecCommit(create_query, (filename, commit_id))
+      #create_query = "INSERT INTO file_instance (path, commit_id) VALUES ('%s', %s)"
+      #self.db.doExecCommit(create_query, (filename, commit_id))
       file_instance_id = self.db.cur.lastrowid
     else:
       file_instance_id = self.db.doFetchAll()[0][0]
@@ -54,3 +58,9 @@ class DatabaseImporter(object):
     path = self.cppStats["basePath"]
     revisionPattern = self.cppStats["revisionPattern"]
     return path + "/" + (revisionPattern % revision) + '/perfile.csv'
+
+  def get_project_id(self, name):
+    self.db.doExec("SELECT id FROM project WHERE name=%s;", name)
+    pid = self.doFetchAll()[0][0]
+    log.debug("Using project {} with ID {}" % (name, pid))
+    return pid
