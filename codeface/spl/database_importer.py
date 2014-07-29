@@ -48,4 +48,5 @@ class DatabaseImporter(object):
     return 1
 
   def get_path_file_level(self):
-    return '/home/sniechzial/03_Uni/Masterarbeit/data/cppstats_analysis_data/apache/httpd-2.4.6/perfile.csv'
+    path = self.conf["spl"]["cppstats"]["basePath"]
+    return path + '/httpd-2.4.6/perfile.csv'
