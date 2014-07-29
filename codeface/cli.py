@@ -30,6 +30,7 @@ from .logger import set_log_level, start_logfile, log
 from .configuration import Configuration
 from .util import execute_command
 from .project import project_analyse, mailinglist_analyse, project_setup
+from .spl.database_importer import DatabaseImporter
 
 def get_parser():
     parser = argparse.ArgumentParser(prog='codeface',
@@ -121,7 +122,9 @@ def cmd_setup(args):
     if logfile:
         logfile = os.path.abspath(logfile)
     conf = Configuration.load(codeface_conf, project_conf)
-    project_setup(conf, False);
+    project_setup(conf, False)
+    importer = DatabaseImporter(conf)
+    importer.import_file_level_data()
 
 def cmd_ml(args):
     '''Dispatch the ``ml`` command.'''
