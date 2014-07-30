@@ -24,7 +24,7 @@ class DatabaseImporter(object):
         key_value_pairs = line.items()
         file_instance_id = self.get_file_instance_id(key_value_pairs, revision)
         for key, value in key_value_pairs:
-          log.info("Got %s: %s" % (key, value))
+          log.debug("Got %s: %s" % (key, value))
           self.handle_file_level_metric(key, value, file_instance_id)
 
   def handle_file_level_metric(self, key, value, file_instance_id):
