@@ -1063,7 +1063,6 @@ DROP TABLE IF EXISTS `codeface`.`spl_variable` ;
 CREATE TABLE IF NOT EXISTS `codeface`.`spl_variable` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `spl_metric_id` INT NOT NULL,
-  `scope` VARCHAR(45) NULL,
   `value` DOUBLE NULL,
   `project_id` BIGINT NULL DEFAULT NULL,
   `release_timeline_id` BIGINT NULL DEFAULT NULL,
