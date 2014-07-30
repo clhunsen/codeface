@@ -105,10 +105,19 @@ class DatabaseImporter(object):
     return 1
 
   def get_path_file_level(self, revision):
+    perfileFilename = self.cppStats["perfile"]
+    path = self.get_path(revision, perfileFilename)
+    return path
+
+  def get_path_revision_level(self, revision):
+    perRevisionFilename = self.cppStats["perrevision"]
+    path = self.get_path(revision, perRevisionFilename)
+    return path
+
+  def get_path(self, revision, filename):
     path = self.cppStats["basePath"]
     revisionPattern = self.cppStats["revisionPattern"]
-    perfileFilename = self.cppStats["perfile"]
-    return "%s/%s/%s" % (path, (revisionPattern % revision), perfileFilename)
+    return "%s/%s/%s" % (path, (revisionPattern % revision), filename)
 
   def get_project_id(self, name):
     self.db.doExec("SELECT id FROM project WHERE name=%s;", name)
