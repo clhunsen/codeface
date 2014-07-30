@@ -125,6 +125,7 @@ def cmd_setup(args):
     project_setup(conf, False)
     importer = DatabaseImporter(conf)
     importer.import_file_level_data()
+    importer.import_revision_level_data()
 
 def cmd_ml(args):
     '''Dispatch the ``ml`` command.'''
