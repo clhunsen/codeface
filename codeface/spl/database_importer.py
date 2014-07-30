@@ -29,10 +29,23 @@ class DatabaseImporter(object):
 
   def import_revision_level_data(self):
     for revision in self.get_revisions():
+      path = self.get_path_revision_level(revision)
+      log.info("Reading revision-level data from %s" % path)
+      data = cp.read_data_per_release(path)
+      for key, value in data.items():
+        log.debug("Got: %s: %s" % (key, value))
+        self.handle_revision_level_metric(key, value, revision)
 
+  def handle_revision_level_metric(self, key, value, revision):
+    releaseTimelineId = self.lookup_release_timeline_id(revision)
+    metricId = self.get_metric_id(key, self.SCOPE_RELEASE)
+    create_query = 'INSERT INTO spl_variable (spl_metric_id, value, release_timeline_id) VALUES (%s, %s, %s)'
+    self.db.doExecCommit(create_query, (metricId, value, releaseTimelineId))
+    variableId = self.db.cur.lastrowid
+    return variableId
 
   def get_revisions(self):
-    self.conf["revisions"]
+    return self.conf["revisions"]
 
   def handle_file_level_metric(self, key, value, file_instance_id):
     if key != 'FILENAME':
