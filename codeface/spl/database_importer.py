@@ -30,6 +30,24 @@ class DatabaseImporter(object):
   def handle_file_level_metric(self, key, value, file_instance_id):
     if key != 'FILENAME':
       metricId = self.get_metric_id(key, self.SCOPE_FILE_INSTANCE)
+      create_query = 'INSERT INTO spl_variable (spl_metric_id, value, spl_file_instance_id) VALUES (%s, %s, %s)'
+      self.db.doExecCommit(create_query, (metricId, value, file_instance_id))
+      variableId = self.db.cur.lastrowid
+      return variableId
+    else:
+      return None
+
+  def get_metric_id(self, key, scope):
+    metric_id = None
+    query = 'SELECT id FROM spl_metric WHERE name = %s AND scope = %s'
+    self.db.doExec(query, (key, scope))
+    if self.db.cur.rowcount == 0:
+      create_query = "INSERT INTO spl_metric (scope, name) VALUES (%s, %s)"
+      self.db.doExecCommit(create_query, (scope, key))
+      metric_id = self.db.cur.lastrowid
+    else:
+      metric_id = self.db.doFetchAll()[0][0]
+    return metric_id
 
   def get_file_instance_id(self, key_value_pairs, revision):
     """Looks for a 'FILENAME' key in the given key-value-pair-list. Performs a lookup for a file_instance with that name in the given revision and returns its ID"""
