@@ -16,7 +16,7 @@ class DatabaseImporter(object):
     self.db = DBManager(conf)
 
   def import_file_level_data(self):
-    for revision in self.conf["revisions"]:
+    for revision in self.get_revisions():
       path = self.get_path_file_level(revision)
       log.info("Reading file-level data from %s" % path)
       data = cp.read_data_per_file(path)
@@ -26,6 +26,13 @@ class DatabaseImporter(object):
         for key, value in key_value_pairs:
           log.debug("Got %s: %s" % (key, value))
           self.handle_file_level_metric(key, value, file_instance_id)
+
+  def import_revision_level_data(self):
+    for revision in self.get_revisions():
+
+
+  def get_revisions(self):
+    self.conf["revisions"]
 
   def handle_file_level_metric(self, key, value, file_instance_id):
     if key != 'FILENAME':
