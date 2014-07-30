@@ -23,8 +23,13 @@ class DatabaseImporter(object):
       for line in data:
         key_value_pairs = line.items()
         file_instance_id = self.get_file_instance_id(key_value_pairs, revision)
-        query = 'INSERT INTO spl_statistics_file (file_instance_id, variable, value) VALUES (###FID###, %s, %s)'.replace('###FID###', file_instance_id)
-        #self.db.doExecMany(query, key_value_pairs)
+        for key, value in key_value_pairs:
+          log.info("Got %s: %s" % (key, value))
+          self.handle_file_level_metric(key, value, file_instance_id)
+
+  def handle_file_level_metric(self, key, value, file_instance_id):
+    if key != 'FILENAME':
+      metricId = self.get_metric_id(key, self.SCOPE_FILE_INSTANCE)
 
   def get_file_instance_id(self, key_value_pairs, revision):
     """Looks for a 'FILENAME' key in the given key-value-pair-list. Performs a lookup for a file_instance with that name in the given revision and returns its ID"""
