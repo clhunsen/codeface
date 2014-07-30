@@ -6,6 +6,10 @@ import csv_parser as cp
 class DatabaseImporter(object):
   """This class provides import functionality for CSV formatted analysis data of the cppstats tool (http://fosd.net/cppstats)."""
 
+  SCOPE_FILE_INSTANCE = 'ScopeFileInstance'
+  SCOPE_RELEASE = 'ScopeRelease'
+  SCOPE_PROJECT = 'ScopeProject'
+
   def __init__(self, conf):
     self.conf = conf
     self.cppStats = conf["spl"]["cppstats"]
