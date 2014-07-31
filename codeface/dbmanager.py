@@ -29,7 +29,10 @@ def _log_db_error(action, args=None):
     except mdb.Error as e:
         if args:
             try:
-                action = action % args
+                if isinstance(args, list):
+                    action = action + ' [execMany]'
+                else:
+                    action = action % args
             except:
                 pass
         log.critical('MySQL error {e[0]} during "{action}": {e[1]}'
