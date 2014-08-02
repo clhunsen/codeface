@@ -440,7 +440,7 @@ AND v.value > 0
 GROUP BY rt.tag
 
 
-HET
+-- HET
 ----------------------------------------
 SELECT rt.tag revision, v.value HET
 FROM spl_variable v
@@ -455,7 +455,7 @@ AND p.name = 'test'
 AND m.scope = 'ScopeRelease'
 
 
-HOHE
+-- HOHE
 ----------------------------------------
 SELECT rt.tag revision, v.value HOHE
 FROM spl_variable v
@@ -470,7 +470,7 @@ AND p.name = 'test'
 AND m.scope = 'ScopeRelease'
 
 
-HOM
+-- HOM
 ----------------------------------------
 SELECT rt.tag revision, v.value HOM
 FROM spl_variable v
@@ -484,7 +484,7 @@ WHERE m.name = 'HOM'
 AND p.name = 'test'
 AND m.scope = 'ScopeRelease'
 
-GRANBL, ...
+-- GRANBL, ...
 ----------------------------------------
 SELECT rt.tag revision, SUM(v.value) GRANBL
 FROM spl_variable v
@@ -501,3 +501,7 @@ JOIN project p
 WHERE p.name = 'test'
 AND m.name = 'GRANBL'
 GROUP BY rt.tag
+
+-- ordering by version number
+---------------------------------------
+ORDER BY INET_ATON(SUBSTRING_INDEX(CONCAT(revision, '.0.0.0'), '.', 4))
