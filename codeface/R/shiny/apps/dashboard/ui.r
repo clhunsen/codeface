@@ -33,6 +33,7 @@ shinyUI(bootstrapPage(
       tags$script(src = "nav/qa_modal.js"),
       tags$script(src = 'js/raphael.2.1.0.min.js'),
       tags$script(src = 'js/justgage.1.0.1.min.js'),
+      tags$script(src = 'js/mustache.js'),
       tags$script(src = "justgage_binding.js"),
       tags$script(src = "shiny_status_binding.js")
   	),
