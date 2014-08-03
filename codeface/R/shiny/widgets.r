@@ -304,4 +304,4 @@ source("widgets/timeseries.r", chdir=TRUE)
 source("widgets/timezones.r", chdir=TRUE)
 source("widgets/vis.clusters.r", chdir=TRUE)
 source("widgets/weekend.r", chdir=TRUE)
-
+source("widgets/spl_release_metrics.r", chdir=TRUE)
