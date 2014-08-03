@@ -15,7 +15,7 @@
   }
 
   var getTemplateExecute = function(name, callback) {
-    $.get('/templates/' + name + '.mst', function(data) {
+    $.get('/apps/dashboard/templates/' + name + '.mst', function(data) {
       callback.call(this, data);
     });
   }
