@@ -1,0 +1,27 @@
+.spl.releases.output {
+  overflow-y: scroll;
+  height: 100%;
+}
+
+table.spl.releases {
+  width: 100%px;
+}
+
+span.change {
+  font-size: 78%;
+  font-weight: bold;
+  color: #bbb;
+}
+
+span.percentage {
+  font-size: 78%;
+  color: #bbb;
+}
+
+span.change.up {
+  color: #090;
+}
+
+span.change.down {
+  color: #900;
+}

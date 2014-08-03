@@ -1,0 +1,17 @@
+<tr>
+  <td class="rev">{{revision}}</td>
+  <td>
+    <span class="value">{{loc.var}}</span>
+    <span class="change {{loc.dir}}">{{loc.diff}}</span>
+    <span class="percentage {{loc.dir}}">{{loc.change}}</span>
+  <td>
+    <span class="value">{{lof.var}}</span>
+    <span class="change {{lof.dir}}">{{lof.diff}}</span>
+    <span class="percentage {{lof.dir}}">{{lof.change}}</span>
+  </td>
+  <td>
+    <span class="value">{{nofc.var}}</span>
+    <span class="change {{nofc.dir}}">{{nofc.diff}}</span>
+    <span class="percentage {{nofc.dir}}">{{nofc.change}}</span>
+  </td>
+</tr>
