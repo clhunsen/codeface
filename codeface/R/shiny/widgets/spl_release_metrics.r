@@ -31,13 +31,13 @@ html.widget.spl.release.metrics <- function(id) {
   tags$div(tags$table(class='table table-striped table-hover spl releases',
     tags$tr(
       tags$td('Revision'),
-      tags$th('LOC'),
-      tags$th('LOF'),
-      tags$th('NOFC'),
-      tags$th('AND'),
-      tags$th('FPFC'),
-      tags$th('SDEG'),
-      tags$th('TDEG')
+      tags$th('LOC', title='Lines Of Code'),
+      tags$th('LOF', title='Lines Of Feature-Code'),
+      tags$th('NOFC', title='# Of Feature Constants'),
+      tags$th('AND', title='Average Nesting Depth (over all files)'),
+      tags$th('FPFC', title='Files Per Feature Constant'),
+      tags$th('SDEG', title='Scattering Degree (# of occurences of feature constants in different feature expressions)'),
+      tags$th('TDEG', title='Tangling Degree (# of different feature constants occuring in a feature expression)')
     )
   ), class="spl releases output", id=id)
 }
