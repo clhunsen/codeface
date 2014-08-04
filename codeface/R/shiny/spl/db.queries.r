@@ -31,6 +31,63 @@ spl.db.hasdata <- function(pid) {
   spl.db.count.files.instances(pid) > 0
 }
 
+spl.db.project.loc <- function(pid) {
+  query <- sprintf("SELECT MAX(LOC) max, MIN(LOC) min, AVG(LOC) avg FROM (
+SELECT rt.tag revision, SUM(v.value) LOC
+FROM spl_variable v
+JOIN spl_metric m
+  ON v.spl_metric_id = m.id
+JOIN spl_file_instance fi
+  ON v.spl_file_instance_id = fi.id
+JOIN release_timeline rt
+  ON rt.id = fi.release_timeline_id
+JOIN spl_file f
+  ON fi.file_id = f.id
+WHERE f.project_id = %1$d
+AND m.name = 'LOC'
+GROUP BY rt.tag
+) as tmp", strtoi(pid))
+  dbGetQuery(conf$con, query)
+}
+
+spl.db.project.lof <- function(pid) {
+  query <- sprintf("SELECT MAX(LOF) max, MIN(LOF) min, AVG(LOF) avg FROM (
+SELECT rt.tag revision, SUM(v.value) LOF
+FROM spl_variable v
+JOIN spl_metric m
+  ON v.spl_metric_id = m.id
+JOIN spl_file_instance fi
+  ON v.spl_file_instance_id = fi.id
+JOIN release_timeline rt
+  ON rt.id = fi.release_timeline_id
+JOIN spl_file f
+  ON fi.file_id = f.id
+WHERE f.project_id = %1$d
+AND m.name = 'LOF'
+GROUP BY rt.tag
+) as tmp", strtoi(pid))
+  dbGetQuery(conf$con, query)
+}
+
+spl.db.project.nofc <- function(pid) {
+  query <- sprintf("SELECT MAX(NOFC) max, MIN(NOFC) min, AVG(NOFC) avg FROM (
+SELECT rt.tag revision, SUM(v.value) NOFC
+FROM spl_variable v
+JOIN spl_metric m
+  ON v.spl_metric_id = m.id
+JOIN spl_file_instance fi
+  ON v.spl_file_instance_id = fi.id
+JOIN release_timeline rt
+  ON rt.id = fi.release_timeline_id
+JOIN spl_file f
+  ON fi.file_id = f.id
+WHERE f.project_id = %1$d
+AND m.name = 'NOFC'
+GROUP BY rt.tag
+) as tmp", strtoi(pid))
+  dbGetQuery(conf$con, query)
+}
+
 spl.db.release.metrics <- function(pid) {
   query <- sprintf("SELECT * FROM (
 SELECT rt.tag revision, m.name, SUM(v.value) sum
@@ -86,7 +143,7 @@ JOIN release_timeline rt
 JOIN spl_metric m
   ON v.spl_metric_id = m.id
 WHERE m.name IN('HOHE', 'HET', 'HOM')
-AND rt.projectId = %1$d 
+AND rt.projectId = %1$d
 AND m.scope = 'ScopeRelease'
 GROUP BY name", strtoi(pid))
   dbGetQuery(conf$con, query)
