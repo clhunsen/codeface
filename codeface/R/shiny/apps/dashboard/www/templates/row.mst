@@ -1,15 +1,15 @@
 <tr>
   <td class="rev">{{revision}}</td>
-  <td>
+  <td class="loc {{loc.importance}}">
     <span class="value">{{loc.var}}</span>
     <span class="change {{loc.dir}}"></span>
     <span class="percentage {{loc.dir}}" title="abs. {{loc.diff}}">{{loc.change}}%</span>
-  <td>
+  <td class="lof {{lof.importance}}">
     <span class="value">{{lof.var}}</span>
     <span class="change {{lof.dir}}"></span>
     <span class="percentage {{lof.dir}}" title="abs. {{lof.diff}}">{{lof.change}}%</span>
   </td>
-  <td>
+  <td class="nofc {{nofc.importance}}">
     <span class="value">{{nofc.var}}</span>
     <span class="change {{nofc.dir}}"></span>
     <span class="percentage {{nofc.dir}}" title="abs. {{nofc.diff}}">{{nofc.change}}%</span>

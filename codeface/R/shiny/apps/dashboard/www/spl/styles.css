@@ -26,6 +26,26 @@ span.change.down, span.percentage.down {
   color: #900;
 }
 
+.low:not(:hover) span.change.up, .low:not(:hover) span.percentage.up {
+  color: #C3E5C4;
+}
+
+.low:not(:hover) span.change.down, .low:not(:hover) span.percentage.down {
+  color: #ffc3c3;
+}
+
+.high span.change.up, .high span.percentage.up {
+  color: #006600;
+  font-weight: bold;
+  font-size: 90%;
+}
+
+.high span.change.down, .high span.percentage.down {
+  color: #910000;
+  font-weight: bold;
+  font-size: 90%;
+}
+
 span.change:before {
   content: '\21DD';
   font-size: 160%;

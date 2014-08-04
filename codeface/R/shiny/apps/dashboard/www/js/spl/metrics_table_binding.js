@@ -32,6 +32,21 @@
     return className;
   }
 
+  var importance = {
+    'general': function(val) {
+      var abs = Math.abs(val);
+      var className = 'low';
+
+      if (abs > 0.1) {
+        className = 'high'
+      } else if (abs > 0.01) {
+        className = 'med'
+      }
+
+      return className;
+    }
+  }
+
   $.extend(releaseMetricsOutput, {
     find: function(scope){
       return $(scope).find('.spl.releases.output');
@@ -46,19 +61,22 @@
               'var': data.LOC[i],
               'diff': data['loc.diff'][i],
               'change': data['loc.change'][i],
-              'dir': getTrendClass(data['loc.diff'][i])
+              'dir': getTrendClass(data['loc.diff'][i]),
+              'importance': importance.general(data['loc.change'][i])
             },
             'lof': {
               'var': data.LOF[i],
               'diff': data['lof.diff'][i],
               'change': data['lof.change'][i],
-              'dir': getTrendClass(data['lof.diff'][i])
+              'dir': getTrendClass(data['lof.diff'][i]),
+              'importance': importance.general(data['lof.change'][i])
             },
             'nofc': {
               'var': data.NOFC[i],
               'diff': data['nofc.diff'][i],
               'change': data['nofc.change'][i],
-              'dir': getTrendClass(data['nofc.diff'][i])
+              'dir': getTrendClass(data['nofc.diff'][i]),
+              'importance': importance.general(data['nofc.change'][i])
             }
           };
           renderTemplateTo(tpl, $el, tplVars, true);
