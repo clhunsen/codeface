@@ -27,6 +27,10 @@ spl.db.count.releases <- function(pid) {
                                 AND rt.type = 'release'", strtoi(pid)))
 }
 
+spl.db.hasdata <- function(pid) {
+  spl.db.count.files.instances(pid) > 0
+}
+
 spl.db.release.metrics <- function(pid) {
   query <- sprintf("SELECT * FROM (
 SELECT rt.tag revision, m.name, SUM(v.value) sum

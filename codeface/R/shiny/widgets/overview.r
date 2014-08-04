@@ -20,6 +20,7 @@
 source("../symbols.r", chdir=TRUE)
 source("../figures.of.merit.r", chdir=TRUE)
 source('./spl/ribbon.r', chdir=TRUE)
+source('../spl/db.queries.r', chdir=TRUE)
 
 combine.status <- function(status.list) {
   status.individual <- c(unlist(status.list))
@@ -190,7 +191,7 @@ initWidget.widget.overview.project <- function(w) {
   })
   w$spl <- reactive({
     list(
-      splenabled = TRUE
+      splenabled = spl.db.hasdata(w$pid()) 
     )
   })
   return(w)
