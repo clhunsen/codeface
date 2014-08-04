@@ -91,3 +91,24 @@ AND m.scope = 'ScopeRelease'
 GROUP BY name", strtoi(pid))
   dbGetQuery(conf$con, query)
 }
+
+spl.db.avg.gran <- function(pid) {
+  query <- sprintf("SELECT name, AVG(sum) value FROM (
+SELECT rt.tag revision, m.name, SUM(v.value) sum
+    FROM spl_variable v
+    JOIN spl_metric m
+      ON m.id = v.spl_metric_id
+      AND m.scope = 'ScopeFileInstance'
+      AND m.name like 'GRAN%%'
+    JOIN spl_file_instance fi
+      ON fi.id = v.spl_file_instance_id
+    JOIN release_timeline rt
+      ON rt.id = fi.release_timeline_id
+    JOIN spl_file f
+      ON f.id = fi.file_id
+      AND f.project_id = %1$d
+    GROUP BY rt.tag, m.name
+) AS tmp
+GROUP BY name", strtoi(pid))
+  dbGetQuery(conf$con, query)
+}

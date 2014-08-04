@@ -40,3 +40,8 @@ spl.release.type <- function(pid) {
   db.data <- spl.db.avg.type(pid)
   db.data
 }
+
+spl.release.gran <- function(pid) {
+  db.data <- spl.db.avg.gran(pid)
+  db.data
+}
