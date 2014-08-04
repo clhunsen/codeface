@@ -1,6 +1,7 @@
 .spl.releases.output {
   overflow-y: scroll;
   height: 100%;
+  background: url(../loading.gif) no-repeat center center;
 }
 
 table.spl.releases {
