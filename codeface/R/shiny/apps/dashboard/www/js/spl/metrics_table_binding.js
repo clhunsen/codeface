@@ -37,9 +37,9 @@
       var abs = Math.abs(val);
       var className = 'low';
 
-      if (abs > 0.1) {
+      if (abs > 20) {
         className = 'high'
-      } else if (abs > 0.01) {
+      } else if (abs > 2) {
         className = 'med'
       }
 
