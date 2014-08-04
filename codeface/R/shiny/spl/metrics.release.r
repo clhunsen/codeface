@@ -23,6 +23,15 @@ spl.release.metrics <- function(pid) {
     loc.change <- spl.release.metrics.change(LOC)
     nofc.diff <- spl.release.metrics.diff(NOFC) 
     nofc.change <- spl.release.metrics.change(NOFC)
+    and.diff <- spl.release.metrics.diff(ANDAVG)
+    and.change <- spl.release.metrics.change(ANDAVG)
+    nofpfc.diff <- spl.release.metrics.diff(NOFPFCMEAN)
+    nofpfc.change <- spl.release.metrics.change(NOFPFCMEAN)
+    sdeg.diff <- spl.release.metrics.diff(SDEGMEAN)
+    sdeg.change <- spl.release.metrics.change(SDEGMEAN)
+    tdeg.diff <- spl.release.metrics.diff(TDEGMEAN)
+    tdeg.change <- spl.release.metrics.change(TDEGMEAN)
+
   })
   extendedFrame
 }

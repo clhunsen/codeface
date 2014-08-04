@@ -77,6 +77,34 @@
               'change': data['nofc.change'][i],
               'dir': getTrendClass(data['nofc.diff'][i]),
               'importance': importance.general(data['nofc.change'][i])
+            },
+            'and': {
+              'var': data.ANDAVG[i],
+              'diff': data['and.diff'][i],
+              'change': data['and.change'][i],
+              'dir': getTrendClass(data['and.diff'][i]),
+              'importance': importance.general(data['and.change'][i])
+            },
+            'nofpfc': {
+              'var': data.NOFPFCMEAN[i],
+              'diff': data['nofpfc.diff'][i],
+              'change': data['nofpfc.change'][i],
+              'dir': getTrendClass(data['nofpfc.diff'][i]),
+              'importance': importance.general(data['nofpfc.change'][i])
+            },
+            'sdeg': {
+              'var': data.SDEGMEAN[i],
+              'diff': data['sdeg.diff'][i],
+              'change': data['sdeg.change'][i],
+              'dir': getTrendClass(data['sdeg.diff'][i]),
+              'importance': importance.general(data['sdeg.change'][i])
+            },
+            'tdeg': {
+              'var': data.TDEGMEAN[i],
+              'diff': data['tdeg.diff'][i],
+              'change': data['tdeg.change'][i],
+              'dir': getTrendClass(data['tdeg.diff'][i]),
+              'importance': importance.general(data['tdeg.change'][i])
             }
           };
           renderTemplateTo(tpl, $el, tplVars, true);

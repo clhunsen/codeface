@@ -1,17 +1,37 @@
 <tr>
   <td class="rev">{{revision}}</td>
   <td class="loc {{loc.importance}}">
-    <span class="value">{{loc.var}}</span>
+    <span class="value">{{loc.var}}</span><br>
     <span class="change {{loc.dir}}"></span>
     <span class="percentage {{loc.dir}}" title="abs. {{loc.diff}}">{{loc.change}}%</span>
   <td class="lof {{lof.importance}}">
-    <span class="value">{{lof.var}}</span>
+    <span class="value">{{lof.var}}</span><br>
     <span class="change {{lof.dir}}"></span>
     <span class="percentage {{lof.dir}}" title="abs. {{lof.diff}}">{{lof.change}}%</span>
   </td>
   <td class="nofc {{nofc.importance}}">
-    <span class="value">{{nofc.var}}</span>
+    <span class="value">{{nofc.var}}</span><br>
     <span class="change {{nofc.dir}}"></span>
     <span class="percentage {{nofc.dir}}" title="abs. {{nofc.diff}}">{{nofc.change}}%</span>
+  </td>
+  <td class="and {{and.importance}}">
+    <span class="value">{{and.var}}</span><br>
+    <span class="change {{and.dir}}"></span>
+    <span class="percentage {{and.dir}}" title="abs. {{and.diff}}">{{and.change}}%</span>
+  </td>
+  <td class="nofpfc {{nofpfc.importance}}">
+    <span class="value">{{nofpfc.var}}</span><br>
+    <span class="change {{nofpfc.dir}}"></span>
+    <span class="percentage {{nofpfc.dir}}" title="abs. {{nofpfc.diff}}">{{nofpfc.change}}%</span>
+  </td>
+  <td class="sdeg {{sdeg.importance}}">
+    <span class="value">{{sdeg.var}}</span><br>
+    <span class="change {{sdeg.dir}}"></span>
+    <span class="percentage {{sdeg.dir}}" title="abs. {{sdeg.diff}}">{{sdeg.change}}%</span>
+  </td>
+  <td class="tdeg {{tdeg.importance}}">
+    <span class="value">{{tdeg.var}}</span><br>
+    <span class="change {{tdeg.dir}}"></span>
+    <span class="percentage {{tdeg.dir}}" title="abs. {{tdeg.diff}}">{{tdeg.change}}%</span>
   </td>
 </tr>
