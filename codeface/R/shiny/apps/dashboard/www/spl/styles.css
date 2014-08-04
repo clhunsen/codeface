@@ -18,10 +18,23 @@ span.percentage {
   color: #bbb;
 }
 
-span.change.up {
+span.change.up, span.percentage.up {
   color: #090;
 }
 
-span.change.down {
+span.change.down, span.percentage.down {
   color: #900;
+}
+
+span.change:before {
+  content: '\21DD';
+  font-size: 160%;
+}
+
+span.change.up:before {
+  content: '\21E7';
+}
+
+span.change.down:before {
+  content: '\21E9';
 }
