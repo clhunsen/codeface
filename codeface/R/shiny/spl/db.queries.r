@@ -70,6 +70,20 @@ SELECT rt.tag revision, m.name, v.value sum
       AND rt.projectId = %1$d
     GROUP BY rt.tag, m.name
 ) as TMP
-ORDER BY INET_ATON(SUBSTRING_INDEX(CONCAT(revision, '.0.0.0'), '.', 4))", pid)
+ORDER BY INET_ATON(SUBSTRING_INDEX(CONCAT(revision, '.0.0.0'), '.', 4))", strtoi(pid))
+  dbGetQuery(conf$con, query)
+}
+
+spl.db.avg.type <- function(pid) {
+  query <- sprintf("SELECT m.name, AVG(v.value) value
+FROM spl_variable v
+JOIN release_timeline rt
+  ON rt.id = v.release_timeline_id
+JOIN spl_metric m
+  ON v.spl_metric_id = m.id
+WHERE m.name IN('HOHE', 'HET', 'HOM')
+AND rt.projectId = %1$d 
+AND m.scope = 'ScopeRelease'
+GROUP BY name", strtoi(pid))
   dbGetQuery(conf$con, query)
 }

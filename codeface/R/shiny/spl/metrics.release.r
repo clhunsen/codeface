@@ -35,3 +35,8 @@ spl.release.metrics <- function(pid) {
   })
   extendedFrame
 }
+
+spl.release.type <- function(pid) {
+  db.data <- spl.db.avg.type(pid)
+  db.data
+}
