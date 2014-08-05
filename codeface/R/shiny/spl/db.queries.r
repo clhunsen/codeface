@@ -169,3 +169,45 @@ SELECT rt.tag revision, m.name, SUM(v.value) sum
 GROUP BY name", strtoi(pid))
   dbGetQuery(conf$con, query)
 }
+
+spl.db.releases.het <- function(pid) {
+  query <- sprintf("SELECT rt.tag revision, v.value value
+FROM spl_variable v
+JOIN release_timeline rt
+  ON rt.id = v.release_timeline_id
+JOIN spl_metric m
+  ON v.spl_metric_id = m.id
+WHERE m.name = 'HET'
+AND rt.projectId = %1$d
+AND m.scope = 'ScopeRelease'
+ORDER BY INET_ATON(SUBSTRING_INDEX(CONCAT(revision, '.0.0.0'), '.', 4))", strtoi(pid))
+  dbGetQuery(conf$con, query)
+}
+
+spl.db.releases.hom <- function(pid) {
+  query <- sprintf("SELECT rt.tag revision, v.value value
+FROM spl_variable v
+JOIN release_timeline rt
+  ON rt.id = v.release_timeline_id
+JOIN spl_metric m
+  ON v.spl_metric_id = m.id
+WHERE m.name = 'HOM'
+AND rt.projectId = %1$d
+AND m.scope = 'ScopeRelease'
+ORDER BY INET_ATON(SUBSTRING_INDEX(CONCAT(revision, '.0.0.0'), '.', 4))", strtoi(pid))
+  dbGetQuery(conf$con, query)
+}
+
+spl.db.releases.hohe <- function(pid) {
+  query <- sprintf("SELECT rt.tag revision, v.value value
+FROM spl_variable v
+JOIN release_timeline rt
+  ON rt.id = v.release_timeline_id
+JOIN spl_metric m
+  ON v.spl_metric_id = m.id
+WHERE m.name = 'HOHE'
+AND rt.projectId = %1$d
+AND m.scope = 'ScopeRelease'
+ORDER BY INET_ATON(SUBSTRING_INDEX(CONCAT(revision, '.0.0.0'), '.', 4))", strtoi(pid))
+  dbGetQuery(conf$con, query)
+}
