@@ -34,8 +34,11 @@ renderWidget.widget.spl.releases.het <- function(w) {
     box()
 
     lines(het$value, type='p', col=colors[1])
-    lines(hom$value, type='p', col=colors[2])
-    lines(hohe$value, type='p', col=colors[3])
+    lines(hom$value, type='p', col=colors[2], pch=22)
+    lines(hohe$value, type='p', col=colors[3], pch=23)
+
+    legend(-5, yrange[2],
+      c('HET', 'HOM', 'HOHE'), cex=0.8, colors, pch=21:23, bty='n')
 
   }, bg='transparent')
 }
@@ -55,7 +58,7 @@ widgetExplanation.widget.spl.releases.het <- function(w) {
 ## Widget class
 createWidgetClass(
   c("widget.spl.releases.het"),
-  "HET for all Releases", "Example Details",
+  "HET/HOM/HOHE for all Releases", "Example Details",
   NULL, # no topical restrictions
   4, 1,
   html=html.widget.spl.releases.het,
