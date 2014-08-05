@@ -82,14 +82,14 @@ widgetbase.output.selectview <- function(w, id) {
 ##
 ## Widget Builder for new widgets
 ##
-widgetbase.output.new <- function(input, output, id, widget.class, topic, pid, selected.pids) {
-  widgetbase.output(input, output, id, widget.class, topic, pid, widget.class$size.x, widget.class$size.y, 1, 1, selected.pids)
+widgetbase.output.new <- function(input, output, id, widget.class, topic, pid, selected.pids, spl = list()) {
+  widgetbase.output(input, output, id, widget.class, topic, pid, widget.class$size.x, widget.class$size.y, 1, 1, selected.pids, spl)
 }
 
 ##
 ## Widget builder for fully configured widgets (pid and selected.pids must be reactive)
 ##
-widgetbase.output <- function(input, output, id, widget.class, topic, pid, size_x, size_y, col, row, selected.pids) {
+widgetbase.output <- function(input, output, id, widget.class, topic, pid, size_x, size_y, col, row, selected.pids, spl = list()) {
   wb <- list()
   tryCatch({
     ## Widget creation and initialization (see: widget.r)
@@ -97,7 +97,7 @@ widgetbase.output <- function(input, output, id, widget.class, topic, pid, size_
     inputView.id <- paste(id, "_selectedview",sep="")
 
     loginfo(paste("Start initialisation of new widget:", widget.class))
-    inst <- initWidget(newWidget(widget.class, pid, reactive({input[[inputView.id]]}), selected.pids))
+    inst <- initWidget(newWidget(widget.class, pid, reactive({input[[inputView.id]]}), selected.pids, spl))
     
     ## reactive assignments (can be done in advance)
     output[[id]] <- renderWidget(inst)
@@ -256,6 +256,14 @@ shinyServer(function(input, output, session) {
 
   ## Topic variable (reactive statement)
   topic <- reactive({t <- paramlist()$topic; if(is.null(t)) "overview" else t })
+  ## Release and file variable (reactive statement)
+  spl <- list(
+    release = reactive({ strtoi(paramlist()$release) }),
+    file = reactive({ strtoi(paramlist()$file) })
+  )
+
+  loginfo(sprintf("release_timeline_id = %d", isolate(spl$release())))
+  loginfo(sprintf("spl_file_instance_id = %d", isolate(spl$file())))
 
   ## Config file name variable (reactive statement)
   config.file <- reactive({paste("widget",topic(),"config",sep=".")})
@@ -387,14 +395,14 @@ shinyServer(function(input, output, session) {
     } else {
       this.pid <- pid
     }
-    
+
     ## Build widget using the widgetbase.output builder
     loginfo(paste("Creating widget from config: ", w$id, "for classname: ", w$cls ))
     widget.classname <- as.character(w$cls)
     widget.class <- widget.list[[widget.classname]]
 
     ## widgetbase is the output object and holds the widget.ui and knows how to render this ui
-    widgetbase <- widgetbase.output(input, output, w$id, widget.class, topic, this.pid, w$size_x, w$size_y, w$col, w$row, selected.pids)
+    widgetbase <- widgetbase.output(input, output, w$id, widget.class, topic, this.pid, w$size_x, w$size_y, w$col, w$row, selected.pids, spl)
 
     ## Send a custom message to Shiny client for adding the base widget
     sendWidgetContent(session, widgetbase)
@@ -449,7 +457,7 @@ shinyServer(function(input, output, session) {
       widget.class <- widget.list[[widget.classname]]
 
       ## add html to widget instance which wraps into gridster item
-      widgetbase <- widgetbase.output.new(input, output, id, widget.class, topic, pid, selected.pids)
+      widgetbase <- widgetbase.output.new(input, output, id, widget.class, topic, pid, selected.pids, spl)
 
       ## finally send widget base to client
       sendWidgetContent(session, widgetbase)

@@ -200,7 +200,7 @@ assert.reactive <- function(x, what) {
 
 ## Create a new widget instance, given a widget class, and reactive variables
 ## pid, view and pids.compare.
-newWidget = function(cls, pid, view=reactive({NULL}), pids.compare=reactive({list()})) {
+newWidget = function(cls, pid, view=reactive({NULL}), pids.compare=reactive({list()}), spl = list()) {
   if (is.null(cls$widget.classes)) {
     logfatal("newWidget called with something that is missing widget.classes:")
     str(cls)
@@ -218,7 +218,8 @@ newWidget = function(cls, pid, view=reactive({NULL}), pids.compare=reactive({lis
     name = cls$name,
     pid = pid,
     pids.compare = pids.compare,
-    view.raw = view
+    view.raw = view,
+    spl = spl
   )
   class(widget) <- cls$widget.classes
   return(widget)
