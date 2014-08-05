@@ -211,3 +211,20 @@ AND m.scope = 'ScopeRelease'
 ORDER BY INET_ATON(SUBSTRING_INDEX(CONCAT(revision, '.0.0.0'), '.', 4))", strtoi(pid))
   dbGetQuery(conf$con, query)
 }
+
+spl.db.files.and.avg <- function(pid, rtid) {
+  query <- sprintf("SELECT f.path path, v.value value
+FROM spl_variable v
+JOIN spl_file_instance fi
+  ON fi.id = v.spl_file_instance_id
+JOIN spl_metric m
+  ON m.id = v.spl_metric_id
+JOIN spl_file f
+  ON f.id = fi.file_id
+WHERE f.project_id = %1$d
+AND fi.release_timeline_id = %2$d
+AND m.name = 'ANDAVG'
+AND v.value > 0
+ORDER BY f.path", strtoi(pid), strtoi(rtid))
+  dbGetQuery(conf$con, query)
+}
