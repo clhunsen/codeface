@@ -233,9 +233,6 @@ sendWidgetViewUpdates <- function(session, w) {
 ##
 shinyServer(function(input, output, session) {
 
-  ## log the Url parameters
-  loginfo(isolate(names(session$clientData$url_search)))
-
   ## Callback when client terminates session
   session$onSessionEnded(function() {
     print("Session ended.")
@@ -246,6 +243,10 @@ shinyServer(function(input, output, session) {
   ##    (Parameter string gets checked, see: nav/breadcrumb.shiny.r)
   paramstr <- reactive({urlparameter.checked(session$clientData$url_search)})
   paramlist <- reactive({urlparameter.as.list(paramstr())})
+
+  ## log the Url parameters
+  loginfo(isolate(session$clientData$url_search))
+  loginfo(paste('URL Parameter:', names(isolate(paramlist()))))
 
   ## Project id (reactive statement)
   pid <- reactive({
