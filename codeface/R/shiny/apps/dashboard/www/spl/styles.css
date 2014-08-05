@@ -60,3 +60,21 @@ span.change.up:before {
 span.change.down:before {
   content: '\21E9';
 }
+
+div.spl.finstance.title {
+  margin-bottom: 10px;
+  font-size: 18px;
+  line-height: 120%;
+  text-align: center;
+  font-weight: bold;
+  overflow: hidden;
+}
+
+div.spl.finstance.metrics {
+  height: 170px;
+  overflow-y: scroll;
+}
+
+div.spl.finstance.metrics table {
+  background-color: #fff;
+}

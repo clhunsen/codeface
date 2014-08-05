@@ -228,3 +228,25 @@ AND v.value > 0
 ORDER BY f.path", strtoi(pid), strtoi(rtid))
   dbGetQuery(conf$con, query)
 }
+
+spl.db.finstance.get <- function(pid, fid) {
+  query <- sprintf("SELECT fi.id id, f.path, rt.tag as revision
+FROM spl_file_instance fi
+JOIN spl_file f ON f.id = fi.file_id
+JOIN release_timeline rt ON rt.id = fi.release_timeline_id
+WHERE fi.id = %2$d
+AND f.project_id = %1$d", strtoi(pid), strtoi(fid))
+  dbGetQuery(conf$con, query)
+}
+
+spl.db.finstance.metrics <- function(pid, fid) {
+  query <- sprintf("SELECT m.name, v.value
+FROM spl_variable v
+JOIN spl_metric m ON m.id = v.spl_metric_id
+JOIN spl_file_instance fi ON fi.id = v.spl_file_instance_id
+JOIN spl_file f ON f.id = fi.file_id
+JOIN release_timeline rt ON rt.id = fi.release_timeline_id
+WHERE fi.id = %2$d
+AND f.project_id = %1$d", strtoi(pid), strtoi(fid))
+  dbGetQuery(conf$con, query)
+}
