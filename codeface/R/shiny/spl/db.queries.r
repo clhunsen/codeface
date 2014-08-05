@@ -250,3 +250,14 @@ WHERE fi.id = %2$d
 AND f.project_id = %1$d", strtoi(pid), strtoi(fid))
   dbGetQuery(conf$con, query)
 }
+
+spl.db.finstance.metrics.max <- function(pid) {
+  query <- sprintf("SELECT m.name, MAX(v.value) value
+FROM spl_variable v
+JOIN spl_metric m ON m.id = v.spl_metric_id
+JOIN spl_file_instance fi ON fi.id = v.spl_file_instance_id
+JOIN spl_file f ON f.id = fi.file_id
+WHERE f.project_id = %1$d
+GROUP BY m.name", strtoi(pid))
+  dbGetQuery(conf$con, query)
+}
