@@ -9,6 +9,11 @@ class DatabaseImporter(object):
   SCOPE_FILE_INSTANCE = 'ScopeFileInstance'
   SCOPE_RELEASE = 'ScopeRelease'
   SCOPE_PROJECT = 'ScopeProject'
+  _metric_id_cache = {}
+  _file_instance_id_cache = {}
+  _file_id_cache = {}
+  _project_id_cache = {}
+  _release_timeline_id_cache = {}
 
   def __init__(self, conf):
     self.conf = conf
@@ -58,16 +63,18 @@ class DatabaseImporter(object):
       return None
 
   def get_metric_id(self, key, scope):
-    metric_id = None
-    query = 'SELECT id FROM spl_metric WHERE name = %s AND scope = %s'
-    self.db.doExec(query, (key, scope))
-    if self.db.cur.rowcount == 0:
-      create_query = "INSERT INTO spl_metric (scope, name) VALUES (%s, %s)"
-      self.db.doExecCommit(create_query, (scope, key))
-      metric_id = self.db.cur.lastrowid
-    else:
-      metric_id = self.db.doFetchAll()[0][0]
-    return metric_id
+    def db_lookup():
+      metric_id = None
+      query = 'SELECT id FROM spl_metric WHERE name = %s AND scope = %s'
+      self.db.doExec(query, (key, scope))
+      if self.db.cur.rowcount == 0:
+        create_query = "INSERT INTO spl_metric (scope, name) VALUES (%s, %s)"
+        self.db.doExecCommit(create_query, (scope, key))
+        metric_id = self.db.cur.lastrowid
+      else:
+        metric_id = self.db.doFetchAll()[0][0]
+      return metric_id
+    return self.get_cached(self._metric_id_cache, (scope, key), db_lookup)
 
   def get_file_instance_id(self, key_value_pairs, revision):
     """Looks for a 'FILENAME' key in the given key-value-pair-list. Performs a lookup for a file_instance with that name in the given revision and returns its ID"""
@@ -80,23 +87,26 @@ class DatabaseImporter(object):
       raise RuntimeError("data is missing a FILENAME attribute")
 
     log.debug("Lookup spl_file_instance.id for %s", filename)
-    file_instance_id = self.lookup_file_instance_id(filename, revision)
-    return str(file_instance_id)
+    def db_lookup():
+      file_instance_id = self.lookup_file_instance_id(filename, revision)
+      return str(file_instance_id)
+    return self.get_cached(self._file_instance_id_cache, (revision, filename), db_lookup)
 
   def lookup_file_id(self, filename):
     """Returns the ID of a file specified by 'filename'. If no instance is found, it is created"""
-    file_id = None
-    projectId = self.get_project_id(self.conf["project"])
-    queryFile = 'SELECT id FROM spl_file WHERE path = %s and project_id = %s'
-    self.db.doExec(queryFile, (filename, projectId))
-    if self.db.cur.rowcount == 0:
-      create_query = "INSERT INTO spl_file (path, project_id) VALUES (%s, %s)"
-      self.db.doExecCommit(create_query, (filename, projectId))
-      file_id = self.db.cur.lastrowid
-    else:
-      file_id = self.db.doFetchAll()[0][0]
-    
-    return file_id
+    def db_lookup():
+      file_id = None
+      projectId = self.get_project_id(self.conf["project"])
+      queryFile = 'SELECT id FROM spl_file WHERE path = %s and project_id = %s'
+      self.db.doExec(queryFile, (filename, projectId))
+      if self.db.cur.rowcount == 0:
+        create_query = "INSERT INTO spl_file (path, project_id) VALUES (%s, %s)"
+        self.db.doExecCommit(create_query, (filename, projectId))
+        file_id = self.db.cur.lastrowid
+      else:
+        file_id = self.db.doFetchAll()[0][0]
+      return file_id
+    return self.get_cached(self._file_id_cache, filename, db_lookup)
 
   def lookup_file_instance_id(self, filename, revision):
     """Returns the ID of a file_instance specified by 'filename' and 'revision'. If no instance is found, it is created"""
@@ -133,14 +143,27 @@ class DatabaseImporter(object):
     return "%s/%s/%s" % (path, (revisionPattern % revision), filename)
 
   def get_project_id(self, name):
-    self.db.doExec("SELECT id FROM project WHERE name=%s;", name)
-    pid = self.db.doFetchAll()[0][0]
-    log.debug("Using project %s with ID %s" % (name, pid))
-    return pid
+    def db_lookup():
+      self.db.doExec("SELECT id FROM project WHERE name=%s;", name)
+      pid = self.db.doFetchAll()[0][0]
+      log.debug("Using project %s with ID %s" % (name, pid))
+      return pid
+    return self.get_cached(self._project_id_cache, name, db_lookup)
 
   def lookup_release_timeline_id(self, revision):
-    projectId = self.get_project_id(self.conf["project"])
-    self.db.doExec("SELECT id FROM release_timeline WHERE projectId = %s AND type = 'release' AND tag = %s", (projectId, revision))
-    rtid = self.db.doFetchAll()[0][0]
-    log.debug("release_timeline lookup returned %s for (projectId:%s, revision:%s)" % (rtid, projectId, revision))
-    return rtid
+    def db_lookup():
+      projectId = self.get_project_id(self.conf["project"])
+      self.db.doExec("SELECT id FROM release_timeline WHERE projectId = %s AND type = 'release' AND tag = %s", (projectId, revision))
+      rtid = self.db.doFetchAll()[0][0]
+      log.debug("release_timeline lookup returned %s for (projectId:%s, revision:%s)" % (rtid, projectId, revision))
+      return rtid
+    return self.get_cached(self._release_timeline_id_cache, revision, db_lookup)
+
+  def get_cached(self, cache, key, lookup_function):
+    value = None
+    if key in cache:
+      value = cache[key]
+    else:
+      value = lookup_function()
+      cache[key] = value
+    return value
