@@ -8,6 +8,13 @@ spl.db.count.files.instances <- function(pid) {
                               WHERE f.project_id = %d', strtoi(pid)))
 }
 
+spl.db.count.files.instances.r <- function(pid, rid) {
+  dbGetQuery(conf$con, sprintf('SELECT COUNT(*) FROM spl_file_instance fi
+                              JOIN spl_file f ON f.id = fi.file_id
+                              WHERE f.project_id = %d
+                              AND fi.release_timeline_id = %d', strtoi(pid), strtoi(rid)))
+}
+
 spl.db.count.variables.file <- function(pid) {
   dbGetQuery(conf$con, sprintf('SELECT COUNT(*) FROM spl_variable v
                                 JOIN spl_file_instance fi ON fi.id = v.spl_file_instance_id
@@ -21,6 +28,21 @@ spl.db.count.variables.release <- function(pid) {
                                 WHERE rt.projectId = %d', strtoi(pid)))
 }
 
+spl.db.count.variables.file.r <- function(pid, rid) {
+  dbGetQuery(conf$con, sprintf('SELECT COUNT(*) FROM spl_variable v
+                                JOIN spl_file_instance fi ON fi.id = v.spl_file_instance_id
+                                JOIN spl_file f ON f.id = fi.file_id
+                                WHERE f.project_id = %d
+                                AND fi.release_timeline_id = %d', strtoi(pid), strtoi(rid)))
+}
+
+spl.db.count.variables.release.r <- function(pid, rid) {
+  dbGetQuery(conf$con, sprintf('SELECT COUNT(*) FROM spl_variable v
+                                JOIN release_timeline rt ON rt.id = v.release_timeline_id
+                                WHERE rt.projectId = %d
+                                AND rt.id = %d', strtoi(pid), strtoi(rid)))
+}
+
 spl.db.count.releases <- function(pid) {
   dbGetQuery(conf$con, sprintf("SELECT COUNT(*) FROM release_timeline rt
                                 WHERE rt.projectId = %d
@@ -29,6 +51,13 @@ spl.db.count.releases <- function(pid) {
 
 spl.db.hasdata <- function(pid) {
   spl.db.count.files.instances(pid) > 0
+}
+
+spl.db.release.get <- function(pid, rid) {
+  dbGetQuery(conf$con, sprintf("SELECT *
+    FROM release_timeline rt
+    WHERE rt.projectId = %1$d
+    AND rt.id = %2$d", strtoi(pid), strtoi(rid)))
 }
 
 spl.db.project.loc <- function(pid) {
@@ -132,6 +161,56 @@ SELECT rt.tag revision, m.name, v.value sum
     GROUP BY rt.tag, m.name
 ) as TMP
 ORDER BY INET_ATON(SUBSTRING_INDEX(CONCAT(revision, '.0.0.0'), '.', 4))", strtoi(pid))
+  dbGetQuery(conf$con, query)
+}
+
+spl.db.release.metrics.r <- function(pid, rid) {
+  query <- sprintf("SELECT * FROM (
+SELECT rt.tag revision, m.name, SUM(v.value) sum
+    FROM spl_variable v
+    JOIN spl_metric m
+      ON m.id = v.spl_metric_id
+      AND m.scope = 'ScopeFileInstance'
+      AND m.name IN ('LOC', 'NOFC', 'LOF')
+    JOIN spl_file_instance fi
+      ON fi.id = v.spl_file_instance_id
+    JOIN release_timeline rt
+      ON rt.id = fi.release_timeline_id
+      AND rt.id = %2$d
+    JOIN spl_file f
+      ON f.id = fi.file_id
+      AND f.project_id = %1$d
+    GROUP BY rt.tag, m.name
+UNION
+SELECT rt.tag revision, m.name, AVG(v.value) sum
+    FROM spl_variable v
+    JOIN spl_metric m
+      ON m.id = v.spl_metric_id
+      AND m.scope = 'ScopeFileInstance'
+      AND m.name IN ('ANDAVG')
+    JOIN spl_file_instance fi
+      ON fi.id = v.spl_file_instance_id
+    JOIN release_timeline rt
+      ON rt.id = fi.release_timeline_id
+      AND rt.id = %2$d
+    JOIN spl_file f
+      ON f.id = fi.file_id
+      AND f.project_id = %1$d
+    GROUP BY rt.tag, m.name
+UNION
+SELECT rt.tag revision, m.name, v.value sum
+    FROM spl_variable v
+    JOIN spl_metric m
+      ON m.id = v.spl_metric_id
+      AND m.scope = 'ScopeRelease'
+      AND m.name IN ('SDEGMEAN', 'TDEGMEAN', 'NOFPFCMEAN')
+    JOIN release_timeline rt
+      ON rt.id = v.release_timeline_id
+      AND rt.projectId = %1$d
+      AND rt.id = %2$d
+    GROUP BY rt.tag, m.name
+) as TMP
+ORDER BY INET_ATON(SUBSTRING_INDEX(CONCAT(revision, '.0.0.0'), '.', 4))", strtoi(pid), strtoi(rid))
   dbGetQuery(conf$con, query)
 }
 
