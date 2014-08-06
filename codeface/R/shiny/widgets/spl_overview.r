@@ -3,11 +3,12 @@ source("../symbols.r", chdir=TRUE)
 source('../spl/db.queries.r', chdir=TRUE)
 
 ## Return HTML for an overview box
-spl.overview.html <- function(title, bigtext, subtitle, link, subtitle.size="100%") {
+
+content.widget.spl.overview <- function(projectname, content) {
+  headline <- sprintf("The %1$s SPL", projectname)
   tagList(
-    tags$div(class="grid_title", title),
-    tags$div(class='grid_bigtext', style="font-size:20px; line-height: 20px; text-align: center", bigtext),
-    tags$div(style=paste("font-size:", subtitle.size, "; text-align: center; font-size: 12px; line-height: 16px; margin-top: 25px"), subtitle)
+    tags$div(class="spl project title", headline, title = headline),
+    tags$div(content, class='spl project summary metrics')
   )
 }
 
@@ -48,22 +49,50 @@ initWidget.widget.spl.overview.project <- function(w) {
   return(w)
 }
 
+renderTable.widget.spl.overview.project <- function(d) {
+  tags$table(class='table table-striped table-condensed',
+    tags$tr(
+      tags$td('Files'),
+      tags$td(d$n.files)
+    ),
+    tags$tr(
+      tags$td('File Instances'),
+      tags$td(d$n.files.instances)
+    ),
+    tags$tr(
+      tags$td('File Level Variables'),
+      tags$td(d$n.variables.file)
+    ),
+    tags$tr(
+      tags$td('Release Level Variables'),
+      tags$td(d$n.variables.release)
+    ),
+    tags$tr(
+      tags$td('Releases'),
+      tags$td(d$n.releases)
+    ),
+    tags$tr(
+      tags$td('LOC'),
+      tags$td(sprintf("%.0f / %.0f / %.0f", d$stat.loc$min, d$stat.loc$max, d$stat.loc$avg), title='(min/max/avg)')
+    ),
+    tags$tr(
+      tags$td('LOF'),
+      tags$td(sprintf("%.0f / %.0f / %.0f", d$stat.lof$min, d$stat.lof$max, d$stat.lof$avg), title='(min/max/avg)')
+    ),
+    tags$tr(
+      tags$td('NOFC'),
+      tags$td(sprintf("%.0f / %.0f / %.0f", d$stat.nofc$min, d$stat.nofc$max, d$stat.nofc$avg), title='(min/max/avg)')
+    )
+  )
+}
+
 renderWidget.widget.spl.overview.project <- function(w) {
   renderUI({
     link <- paste("?projectid=", w$pid(), sep="")
     data <- w$data()
-    spl.overview.html(w$project.name(), "SPL",
-              tags$table(width="100%",
-                                 tags$tr(tags$td(paste('Files: ', data$n.files))),
-                                 tags$tr(tags$td(paste('File Instances: ', data$n.files.instances))),
-                                 tags$tr(tags$td(paste('File Level Variables: ', data$n.variables.file))),
-                                 tags$tr(tags$td(paste('Release Level Variables: ', data$n.variables.release))),
-                                 tags$tr(tags$td(paste('Releases: ', data$n.releases))),
-                                 tags$tr(tags$td(sprintf("LOC: %.0f / %.0f / %.0f (min/max/avg)", data$stat.loc$min, data$stat.loc$max, data$stat.loc$avg))),
-                                 tags$tr(tags$td(sprintf("LOF: %.0f / %.0f / %.0f (min/max/avg)", data$stat.lof$min, data$stat.lof$max, data$stat.lof$avg))),
-                                 tags$tr(tags$td(sprintf("NOFC: %.0f / %.0f / %.0f (min/max/avg)", data$stat.nofc$min, data$stat.nofc$max, data$stat.nofc$avg)))
-                                 ),
-              link
+    content.widget.spl.overview(
+      w$project.name(),
+      renderTable.widget.spl.overview.project(data)
     )
   })
 }

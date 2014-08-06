@@ -61,7 +61,7 @@ span.change.down:before {
   content: '\21E9';
 }
 
-div.spl.finstance.title {
+div.spl.title {
   margin-bottom: 10px;
   font-size: 18px;
   line-height: 120%;
@@ -70,11 +70,16 @@ div.spl.finstance.title {
   overflow: hidden;
 }
 
-div.spl.finstance.metrics {
+div.spl.finstance.metrics, div.spl.project.summary {
   height: 170px;
   overflow-y: scroll;
 }
 
-div.spl.finstance.metrics table {
+div.spl.metrics table {
   background-color: #fff;
+  font-size: 12px;
+}
+
+div.spl.metrics table th, div.spl.metrics table td {
+  padding: 1px 5px;
 }
