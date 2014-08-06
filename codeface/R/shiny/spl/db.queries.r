@@ -119,7 +119,7 @@ GROUP BY rt.tag
 
 spl.db.release.metrics <- function(pid) {
   query <- sprintf("SELECT * FROM (
-SELECT rt.tag revision, m.name, SUM(v.value) sum
+SELECT f.project_id pid, rt.id rid, rt.tag revision, m.name, SUM(v.value) sum
     FROM spl_variable v
     JOIN spl_metric m
       ON m.id = v.spl_metric_id
@@ -134,7 +134,7 @@ SELECT rt.tag revision, m.name, SUM(v.value) sum
       AND f.project_id = %1$d
     GROUP BY rt.tag, m.name
 UNION
-SELECT rt.tag revision, m.name, AVG(v.value) sum
+SELECT f.project_id pid, rt.id rid, rt.tag revision, m.name, AVG(v.value) sum
     FROM spl_variable v
     JOIN spl_metric m
       ON m.id = v.spl_metric_id
@@ -149,7 +149,7 @@ SELECT rt.tag revision, m.name, AVG(v.value) sum
       AND f.project_id = %1$d
     GROUP BY rt.tag, m.name
 UNION
-SELECT rt.tag revision, m.name, v.value sum
+SELECT rt.projectId pid, rt.id rid, rt.tag revision, m.name, v.value sum
     FROM spl_variable v
     JOIN spl_metric m
       ON m.id = v.spl_metric_id

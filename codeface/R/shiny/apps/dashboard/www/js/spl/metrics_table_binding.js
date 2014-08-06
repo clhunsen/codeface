@@ -47,6 +47,20 @@
     }
   }
 
+  var releaseUrl = function(projectId, releaseId) {
+    return './?topic=spl-release&projectid=' + projectId + '&release=' + releaseId;
+  }
+
+  $('html').on('click', 'table.spl.releases tr', function(ev){
+    var el = $(ev.target).parents('tr');
+    var rid = el.data('spl-rid');
+    var pid = el.data('spl-pid');
+    if (pid && rid) {
+      var url = releaseUrl(pid, rid);
+      document.location.href = url;
+    }
+  });
+
   $.extend(releaseMetricsOutput, {
     find: function(scope){
       return $(scope).find('.spl.releases.output');
@@ -57,6 +71,8 @@
         $.each(data.revision, function(i, v) {
           var tplVars = {
             'revision': data.revision[i],
+            'pid' : data.pid[i],
+            'rid': data.rid[i],
             'loc': {
               'var': data.LOC[i],
               'diff': data['loc.diff'][i],

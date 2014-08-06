@@ -1,4 +1,4 @@
-<tr>
+<tr data-spl-rid="{{rid}}" data-spl-pid="{{pid}}">
   <td class="rev">{{revision}}</td>
   <td class="loc {{loc.importance}}">
     <span class="value">{{loc.var}}</span><br>

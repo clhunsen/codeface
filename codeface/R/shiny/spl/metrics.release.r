@@ -13,7 +13,7 @@ spl.release.metrics.diff <- function(vals) {
 
 spl.release.metrics <- function(pid) {
   db.data <- spl.db.release.metrics(pid)
-  data <- cast(db.data, revision~name, value = 'sum')
+  data <- cast(db.data, pid+rid+revision~name, value = 'sum')
   frame <- data.frame(data)
   frame <- frame[order(spl.versions.sortable(frame$revision)), ]
   extendedFrame <- within(frame, {
