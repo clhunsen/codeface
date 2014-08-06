@@ -340,3 +340,15 @@ WHERE f.project_id = %1$d
 GROUP BY m.name", strtoi(pid))
   dbGetQuery(conf$con, query)
 }
+
+spl.db.finstances.get <- function(pid, rid) {
+  query <- sprintf("SELECT f.project_id pid, fi.id fiid, f.path
+FROM spl_file_instance fi
+JOIN spl_file f
+  ON f.id = fi.file_id
+JOIN release_timeline rt
+  ON rt.id = fi.release_timeline_id
+  AND rt.id = %2$d
+WHERE f.project_id = %1$d", strtoi(pid), strtoi(rid))
+  dbGetQuery(conf$con, query)
+}

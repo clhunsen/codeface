@@ -75,6 +75,11 @@ div.spl.finstance.metrics, div.spl.project.summary {
   overflow-y: scroll;
 }
 
+div.spl.finstances.metrics {
+  height: 510px;
+  overflow-y: scroll;
+}
+
 div.spl.metrics table {
   background-color: #fff;
   font-size: 12px;
