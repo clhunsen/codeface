@@ -211,7 +211,8 @@ renderWidget.widget.overview.project <- function(w) {
     link <- paste("?projectid=", w$pid(), sep="")
 
     if(w$spl()$splenabled) {
-      markers <- list(spl.tags.ribbon('SPL'))
+      link.spl <- paste('./?projectid=', w$pid(), '&topic=spl-project', sep='')
+      markers <- list(spl.tags.ribbon('SPL', link=link.spl))
     } else {
       markers = list()
     }
