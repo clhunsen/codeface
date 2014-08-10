@@ -19,6 +19,8 @@
 ## This file should contain the overview widgets for the main dashboard
 source("../symbols.r", chdir=TRUE)
 source("../figures.of.merit.r", chdir=TRUE)
+source('./spl/ribbon.r', chdir=TRUE)
+source('../spl/db.queries.r', chdir=TRUE)
 
 combine.status <- function(status.list) {
   status.individual <- c(unlist(status.list))
@@ -80,12 +82,12 @@ make.indicator <- function(symbol, color) {
 
 
 ## Return HTML for an overview box
-overview.html <- function(title, bigtext, subtitle, link, subtitle.size="100%") {
-  tagList(
+overview.html <- function(title, bigtext, subtitle, link, subtitle.size="100%", additionalTags=list()) {
+  append(additionalTags, tagList(
     tags$div(class="grid_title", title),
     tags$div(class='grid_bigtext', style="font-size:120px; line-height: 80px; text-align: center", bigtext),
     tags$div(style=paste("font-size:", subtitle.size, "; text-align: center; font-size: 60px; line-height: 40px; margin-top: 25px"), subtitle)
-  )
+  ))
 }
 
 ## Superclass constructor which already fills important variables
@@ -187,6 +189,11 @@ initWidget.widget.overview.project <- function(w) {
       complexity = figure.of.merit.complexity(w$pid())$status
     )
   })
+  w$spl <- reactive({
+    list(
+      splenabled = spl.db.hasdata(w$pid()) 
+    )
+  })
   return(w)
 }
 
@@ -202,6 +209,13 @@ renderWidget.widget.overview.project <- function(w) {
     indicator.complexity <- make.indicator(symbol.complexity, as.color(w$status()$complexity))
 
     link <- paste("?projectid=", w$pid(), sep="")
+
+    if(w$spl()$splenabled) {
+      link.spl <- paste('./?projectid=', w$pid(), '&topic=spl-project', sep='')
+      markers <- list(spl.tags.ribbon('SPL', link=link.spl))
+    } else {
+      markers = list()
+    }
     overview.html(w$project.name(), indicator.summary,
               tags$table(width="100%", tags$tr(
                                  tags$td(indicator.collaboration),
@@ -209,7 +223,8 @@ renderWidget.widget.overview.project <- function(w) {
                                  tags$td(indicator.communication),
                                  tags$td(indicator.complexity)
                                  )),
-              link
+              link,
+              additionalTags = markers
     )
   })
 }

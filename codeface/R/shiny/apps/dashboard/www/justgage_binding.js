@@ -32,7 +32,12 @@ $.extend(justgageOutputBinding, {
         label: $(el).data("units")
       }));
     }
-    $(el).data('gauge').refresh(data);
+    if (data.value && data.max) {
+      $(el).data('gauge').refresh(data.value, data.max);
+    } else {
+      $(el).data('gauge').refresh(data);
+    }
+
   }
 });
 Shiny.outputBindings.register(justgageOutputBinding, 'dashboard.justgageOutputBinding');

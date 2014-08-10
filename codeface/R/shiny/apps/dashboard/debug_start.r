@@ -1,0 +1,4 @@
+require(shiny)
+
+runApp(".")
+

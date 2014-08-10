@@ -1,0 +1,90 @@
+.spl.releases.output {
+  overflow-y: scroll;
+  height: 100%;
+  background: url(../loading.gif) no-repeat center center;
+}
+
+table.spl.releases {
+  width: 100%;
+  background-color: #fff;
+}
+
+span.change {
+  font-size: 78%;
+  font-weight: bold;
+  color: #bbb;
+}
+
+span.percentage {
+  font-size: 78%;
+  color: #bbb;
+}
+
+span.change.up, span.percentage.up {
+  color: #090;
+}
+
+span.change.down, span.percentage.down {
+  color: #900;
+}
+
+.low:not(:hover) span.change.up, .low:not(:hover) span.percentage.up {
+  color: #C3E5C4;
+}
+
+.low:not(:hover) span.change.down, .low:not(:hover) span.percentage.down {
+  color: #ffc3c3;
+}
+
+.high span.change.up, .high span.percentage.up {
+  color: #006600;
+  font-weight: bold;
+  font-size: 90%;
+}
+
+.high span.change.down, .high span.percentage.down {
+  color: #910000;
+  font-weight: bold;
+  font-size: 90%;
+}
+
+span.change:before {
+  content: '\21DD';
+  font-size: 160%;
+}
+
+span.change.up:before {
+  content: '\21E7';
+}
+
+span.change.down:before {
+  content: '\21E9';
+}
+
+div.spl.title {
+  margin-bottom: 10px;
+  font-size: 18px;
+  line-height: 120%;
+  text-align: center;
+  font-weight: bold;
+  overflow: hidden;
+}
+
+div.spl.finstance.metrics, div.spl.project.summary {
+  height: 170px;
+  overflow-y: scroll;
+}
+
+div.spl.finstances.metrics {
+  height: 510px;
+  overflow-y: scroll;
+}
+
+div.spl.metrics table {
+  background-color: #fff;
+  font-size: 12px;
+}
+
+div.spl.metrics table th, div.spl.metrics table td {
+  padding: 1px 5px;
+}

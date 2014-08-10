@@ -38,7 +38,8 @@ class Configuration(Mapping):
     OPTIONAL_KEYS = ('description', 'ml', 'mailinglists', 'sleepTime',
                      'proxyHost', 'proxyPort', 'bugsProjectName',
                      'productAsProject', 'issueTrackerType',
-                     'issueTrackerURL', 'understand', 'sloccount')
+                     'issueTrackerURL', 'understand', 'sloccount',
+                     'spl')
     ALL_KEYS = set(GLOBAL_KEYS + PROJECT_KEYS + OPTIONAL_KEYS)
 
     def __init__(self):

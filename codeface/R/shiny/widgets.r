@@ -200,7 +200,7 @@ assert.reactive <- function(x, what) {
 
 ## Create a new widget instance, given a widget class, and reactive variables
 ## pid, view and pids.compare.
-newWidget = function(cls, pid, view=reactive({NULL}), pids.compare=reactive({list()})) {
+newWidget = function(cls, pid, view=reactive({NULL}), pids.compare=reactive({list()}), spl = list()) {
   if (is.null(cls$widget.classes)) {
     logfatal("newWidget called with something that is missing widget.classes:")
     str(cls)
@@ -218,7 +218,8 @@ newWidget = function(cls, pid, view=reactive({NULL}), pids.compare=reactive({lis
     name = cls$name,
     pid = pid,
     pids.compare = pids.compare,
-    view.raw = view
+    view.raw = view,
+    spl = spl
   )
   class(widget) <- cls$widget.classes
   return(widget)
@@ -304,4 +305,16 @@ source("widgets/timeseries.r", chdir=TRUE)
 source("widgets/timezones.r", chdir=TRUE)
 source("widgets/vis.clusters.r", chdir=TRUE)
 source("widgets/weekend.r", chdir=TRUE)
-
+source("widgets/spl_overview.r", chdir=TRUE)
+source("widgets/spl_release_metrics.r", chdir=TRUE)
+source("widgets/spl_release_type.r", chdir=TRUE)
+source("widgets/spl_release_gran.r", chdir=TRUE)
+source("widgets/spl_releases_het.r", chdir=TRUE)
+source("widgets/spl_files_and.r", chdir=TRUE)
+source("widgets/spl_finstance_info.r", chdir=TRUE)
+source("widgets/spl_finstance_gauge_loc.r", chdir=TRUE)
+source("widgets/spl_finstance_gauge_lof.r", chdir=TRUE)
+source("widgets/spl_finstance_gauge_ndmax.r", chdir=TRUE)
+source("widgets/spl_finstance_gauge_nofc.r", chdir=TRUE)
+source("widgets/spl_release_overview.r", chdir=TRUE)
+source("widgets/spl_release_finstances.r", chdir=TRUE)
